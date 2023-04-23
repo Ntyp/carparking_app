@@ -31,6 +31,7 @@ import DasboardOwner from "./screens/owner/DasboardOwner";
 
 // Admin
 import AdminHomeScreen from "./screens/admin/AdminHomeScreen";
+import AdminMangeUserScreen from "./screens/admin/AdminMangeUserScreen";
 // Super Admin
 import SuperAdminHomeScreen from "./screens/superadmin/SuperAdminHomeScreen";
 import CreateCarparkingScreen from "./screens/superadmin/CreateCarparkingScreen";
@@ -115,6 +116,11 @@ const App = () => {
         <Stack.Screen
           name='DasboardOwner'
           component={DasboardOwner}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='AdminMangeUser'
+          component={AdminMangeUserScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

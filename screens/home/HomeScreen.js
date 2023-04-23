@@ -125,7 +125,7 @@ const HomeScreen = ({ navigation }) => {
             <Button
               style={styles.button}
               mode='contained'
-              onPress={() => navigation.navigate("CarparkingCreate")}
+              onPress={() => navigation.navigate("AdminMangeUser")}
             >
               Manage User
             </Button>

@@ -78,18 +78,17 @@ const BookingScreen = ({ navigation, route }) => {
         user: user.id,
       })
       .then(function (response) {
-        console.log(response.data.data[0]);
-        // alert("Booking Success");
-        // navigation.navigate("Home");
-        // axios
-        //   .post("http://10.0.2.2:6969/api/booking/cronjob", {
-        //     id: carparkingId, //booking_id
-        //     timeIn: selectedTime,
-        //   })
-        //   .then(function (response) {})
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   });
+        alert("Booking Success");
+        navigation.navigate("Home");
+        axios
+          .post("http://10.0.2.2:6969/api/booking/cronjob", {
+            id: carparkingId, //booking_id
+            timeIn: selectedTime,
+          })
+          .then(function (response) {})
+          .catch(function (error) {
+            console.log(error);
+          });
       })
       .catch(function (error) {
         console.log(error);
