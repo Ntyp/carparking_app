@@ -28,6 +28,7 @@ import BookingPaymentDetailScreen from "./screens/booking/BookingPaymentDetailSc
 
 // Owner
 import DasboardOwner from "./screens/owner/DasboardOwner";
+import BookingHistoryOwnerScreen from "./screens/booking/BookingHistoryOwnerScreen";
 
 // Admin
 import AdminHomeScreen from "./screens/admin/AdminHomeScreen";
@@ -121,6 +122,11 @@ const App = () => {
         <Stack.Screen
           name='AdminMangeUser'
           component={AdminMangeUserScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='BookingHistoryOwner'
+          component={BookingHistoryOwnerScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

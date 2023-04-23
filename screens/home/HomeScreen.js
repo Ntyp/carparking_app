@@ -108,7 +108,14 @@ const HomeScreen = ({ navigation }) => {
               mode='contained'
               onPress={() => navigation.navigate("CarparkingMange")}
             >
-              Mange Carparking
+              Carparking Lane Status
+            </Button>
+            <Button
+              style={styles.button}
+              mode='contained'
+              onPress={() => navigation.navigate("BookingHistoryOwner")}
+            >
+              Booking History
             </Button>
           </>
         ) : null}
