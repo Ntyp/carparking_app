@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "caniparkhere",
+    "slug": "caniparkhere",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "caniparkhere"
+}
