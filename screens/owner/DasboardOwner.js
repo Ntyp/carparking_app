@@ -7,6 +7,7 @@ import RNPickerSelect from "react-native-picker-select";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DatePicker from "react-native-date-picker";
 import Icon from "react-native-vector-icons/Ionicons";
+import config from "../../config";
 
 const DasboardOwner = ({ navigation }) => {
   const [items, setItems] = useState([]);
@@ -24,7 +25,7 @@ const DasboardOwner = ({ navigation }) => {
       console.log(userData);
       setUser(userData);
       axios
-        .get(`http://10.0.2.2:6969/api/owner-count/${userData.id}/${date1}`)
+        .get(`${config.mainAPI}/owner-count/${userData.id}/${date1}`)
         .then(function (response) {
           console.log("result =>", response.data.data[0].count);
           setCount(response.data.data[0].count);
@@ -34,7 +35,7 @@ const DasboardOwner = ({ navigation }) => {
         });
 
       axios
-        .get(`http://10.0.2.2:6969/api/owner-money/${userData.id}/${date1}`)
+        .get(`${config.mainAPI}/owner-money/${userData.id}/${date1}`)
         .then(function (response) {
           console.log("result =>", response.data.data[0]);
           setMoney(response.data.data[0].money);
@@ -50,7 +51,7 @@ const DasboardOwner = ({ navigation }) => {
     const userData = JSON.parse(userDataString);
     const status = "Open";
     axios
-      .post("http://10.0.2.2:6969/api/owner-update-status-carparking", {
+      .post(`${config.mainAPI}/owner-update-status-carparking`, {
         id: userData.id,
         status: status,
       })
@@ -67,7 +68,7 @@ const DasboardOwner = ({ navigation }) => {
     const userData = JSON.parse(userDataString);
     const status = "Close";
     axios
-      .post("http://10.0.2.2:6969/api/owner-update-status-carparking", {
+      .post(`${config.mainAPI}/owner-update-status-carparking`, {
         id: userData.id,
         status: status,
       })
@@ -116,21 +117,15 @@ const DasboardOwner = ({ navigation }) => {
           <View style={styles.box}>
             <Text style={styles.labelBox}>ยอดจองทั้งหมด</Text>
             <Text style={styles.labelBoxNumber}>
-              {count == 0 ? "0" : count}
+              {count == 0 ? "0" : count} รายการ
             </Text>
           </View>
           <View style={styles.box2}>
-            <Text style={styles.labelBox}>ยอดเงินรับ</Text>
+            <Text style={styles.labelBox}>ยอดเงินรับทั้งหมด</Text>
             <Text style={styles.labelBoxNumber}>
               ฿ {money == null ? "0" : money} บาท
             </Text>
           </View>
-          <Button style={styles.button} onPress={updateStatusCarparkingOpen}>
-            <Text style={styles.buttonText}>เปิดลานจอด</Text>
-          </Button>
-          <Button style={styles.button} onPress={updateStatusCarparkingClose}>
-            <Text style={styles.buttonText}>ปิดลานจอด</Text>
-          </Button>
         </View>
       </View>
     </ImageBackground>

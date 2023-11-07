@@ -3,6 +3,7 @@ import { StyleSheet, View, ImageBackground, ScrollView } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import axios from "axios";
 import { Dropdown } from "react-native-element-dropdown";
+import config from "../../config";
 
 const AdminMangeUserScreen = ({ navigation }) => {
   const [user, setUser] = useState();
@@ -10,6 +11,8 @@ const AdminMangeUserScreen = ({ navigation }) => {
   const [nameTh, setNameTh] = useState("");
   const [id, setId] = useState("");
   const [role, setRole] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
+  const [userList, setUserList] = useState([]);
 
   const fetchUser = async () => {
     const userDataString = await AsyncStorage.getItem("_isAccessUser");
@@ -28,8 +31,8 @@ const AdminMangeUserScreen = ({ navigation }) => {
 
   const handleUpdate = () => {
     axios
-      .post("http://10.0.2.2:6969/api/edituser", {
-        id: id,
+      .post(`${config.mainAPI}/edituser`, {
+        username: username,
         role: role,
       })
       .then(function (response) {
@@ -41,8 +44,22 @@ const AdminMangeUserScreen = ({ navigation }) => {
       });
   };
 
+  const getUserOnly = () => {
+    axios
+      .get(`${config.mainAPI}/listUserOnly`)
+      .then(function (response) {
+        const value = response.data.data;
+        console.log('value111',value);
+        setUserList(value);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     fetchUser();
+    getUserOnly();
   }, []);
 
   return (
@@ -52,32 +69,53 @@ const AdminMangeUserScreen = ({ navigation }) => {
     >
       <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.headingText}>Mange User</Text>
-          <TextInput
-            style={styles.inputText}
-            label='Username'
-            value={id}
-            mode='flat'
-            onChangeText={(text) => setId(text)}
-          ></TextInput>
-          <Dropdown
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={roleList}
-            search
-            maxHeight={300}
-            labelField='label'
-            valueField='value'
-            placeholder='Role'
-            searchPlaceholder='Search...'
-            value={role}
-            onChange={(item) => {
-              setRole(item.value);
-            }}
-          />
+          <Text style={styles.headingText}>UPDATE ROLE</Text>
+          <View style={styles.horizontalLine} />
+
+          <View>
+            <Text style={styles.labelText}>User:</Text>
+            {/* <TextInput
+              style={styles.inputText}
+              label="Username"
+              value={id}
+              mode="flat"
+              onChangeText={(text) => setId(text)}
+            ></TextInput> */}
+            <Dropdown
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={userList}
+              maxHeight={300}
+              labelField="user_username"
+              valueField="user_username"
+              value={selectedUser}
+               onChange={(item) => {
+                setSelectedUser(item.user_username);
+              }}
+            />
+          </View>
+          <View>
+            <Text style={styles.labelText}>Role:</Text>
+            <Dropdown
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={roleList}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              value={role}
+              onChange={(item) => {
+                setRole(item.value);
+              }}
+            />
+          </View>
+
           <Button style={styles.button} onPress={handleUpdate}>
             <Text style={styles.labelButton}>Update</Text>
           </Button>
@@ -127,6 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
+    marginBottom: 15,
   },
   icon: {
     marginRight: 5,
@@ -146,5 +185,13 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  horizontalLine: {
+    marginBottom: 15,
+    borderBottomColor: "#2f2f2f", // Change the color to your desired color
+    borderBottomWidth: 1, // Change the thickness as needed
+  },
+  labelText: {
+    marginBottom: 10,
   },
 });

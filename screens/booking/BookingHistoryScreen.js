@@ -13,6 +13,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import moment from "moment";
+import config from "../../config";
 
 const BookingHistoryScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
@@ -27,7 +28,7 @@ const BookingHistoryScreen = ({ navigation }) => {
     if (userDataString) {
       const userData = JSON.parse(userDataString);
       setUser(userData);
-      fetch(`http://10.0.2.2:6969/api/booking-user/${userData.id}`)
+      fetch(`${config.mainAPI}/booking-user/${userData.id}`)
         .then((res) => res.json())
         .then((result) => {
           console.log("result =>", result.data);
@@ -61,7 +62,6 @@ const BookingHistoryScreen = ({ navigation }) => {
                     <Text>เวลาจอง: {item.booking_time_in} น.</Text>
                     <Text>
                       วันที่: {formatDate(item.booking_date)}
-                      {/* {item.booking_price > 0 ? item.booking_price : 0} THB. */}
                     </Text>
                   </Card.Actions>
                 </Card.Content>

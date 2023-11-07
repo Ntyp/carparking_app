@@ -1,70 +1,151 @@
-import { StyleSheet, Text, View, ImageBackground, Linking } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Linking,
+  ScrollView,
+  Image,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { Button } from "react-native-paper";
+import axios from "axios";
+import config from "../../config";
 
 const CarparkingDetailScreen = ({ navigation, route }) => {
   const image = { uri: "https://picsum.photos/700" };
   const [item, setItem] = useState({});
-  const onPressDetail = (id, place, parkid) => {
+  const [data, setData] = useState([]);
+  const onPressDetail = () => {
     navigation.navigate("Booking", {
-      id: id,
-      carparkingPlace: place,
-      carparkingId: parkid,
+      id: data.carparking_id,
+      carparkingId: data.carparking_id,
     });
   };
-  useEffect(() => {
-    fetch("http://10.0.2.2:6969/api/carparking/" + route.params.id)
-      .then((res) => res.json())
-      .then((result) => {
-        console.log("result", result.data[0]);
-        setItem(result.data[0]);
+
+  const getCarParkingDetail = (id) => {
+    axios
+      .get(`${config.mainAPI}/getCarParkingList`)
+      .then(function (response) {
+        setData(response.data.data[0]);
+      })
+      .catch(function (error) {
+        console.log(error);
       });
+  };
+
+  useEffect(() => {
+    getCarParkingDetail(route.params.id);
   }, []);
 
   return (
-    <View style={styles.backGround}>
-      <ImageBackground
-        source={image}
-        resizeMode='cover'
-        style={styles.headingImg}
-      >
-        <View style={styles.emptyView}></View>
-        <View style={styles.content}>
-          <Text style={styles.namePlace}>{item.carparking_name}</Text>
-          <View style={styles.boxStyle}>
-            <Text style={styles.locationPlace}>{item.carparking_district}</Text>
-            <Text
-              style={styles.txtMap}
-              onPress={() => Linking.openURL(item.carparking_url)}
-            >
-              Map Direction
-            </Text>
+    // <View style={styles.backGround}>
+    //   <ImageBackground
+    //     source={image}
+    //     resizeMode="cover"
+    //     style={styles.headingImg}
+    //   >
+    //     <View style={styles.emptyView}></View>
+    //     <View style={styles.content}>
+    //       <Text style={styles.namePlace}>{item.carparking_name}</Text>
+    //       <View style={styles.boxStyle}>
+    //         <Text style={styles.locationPlace}>{item.carparking_district}</Text>
+    //         <Text
+    //           style={styles.txtMap}
+    //           onPress={() => Linking.openURL(item.carparking_url)}
+    //         >
+    //           Map Direction
+    //         </Text>
+    //       </View>
+    //       <Text style={styles.locationPlace}>
+    //         Status:{item.carparking_status}
+    //       </Text>
+    //       <View style={styles.hrLine}></View>
+    //       <Text style={styles.topicPlace}>Detail</Text>
+    //       <Text style={styles.detailPlace}>{item.carparking_detail}</Text>
+    //       <Text style={styles.topicPlace}>Cost</Text>
+    //       <Text style={styles.spanContent}>{item.carparking_price}฿/hr</Text>
+    //       <Button
+    //         style={styles.btnBook}
+    //         mode="contained"
+    //         onPress={() =>
+    //           onPressDetail(
+    //             item.carparking_id,
+    //             item.carparking_name,
+    //             item.carparking_id
+    //           )
+    //         }
+    //         key={item.carparking_id}
+    //       >
+    //         Book Now
+    //       </Button>
+    //     </View>
+    //   </ImageBackground>
+
+    // </View>
+
+    <ImageBackground
+      source={require("../../components/images/texture-geometry-shapes-2.png")}
+      style={styles.backgroundImage}
+    >
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.headingText}>{data.carparking_name}</Text>
+          <View style={styles.horizontalLine} />
+          {/* <View style={styles.previewImg}></View> */}
+          <View style={styles.bgImg}>
+            <Image
+              style={styles.headingImg}
+              source={require("../../components/images/parking.png")}
+            />
           </View>
-          <Text style={styles.locationPlace}>
-            Status:{item.carparking_status}
-          </Text>
-          <View style={styles.hrLine}></View>
-          <Text style={styles.topicPlace}>Detail</Text>
-          <Text style={styles.detailPlace}>{item.carparking_detail}</Text>
-          <Text style={styles.topicPlace}>Cost</Text>
-          <Text style={styles.spanContent}>{item.carparking_price}฿/hr</Text>
-          <Button
-            style={styles.btnBook}
-            mode='contained'
-            onPress={() =>
-              onPressDetail(
-                item.carparking_id,
-                item.carparking_name,
-                item.carparking_id
-              )
-            }
-            key={item.carparking_id}
-          >
-            Book Now
-          </Button>
+
+          <View>
+            <View>
+              <Text style={styles.labelText}>Detail:</Text>
+            </View>
+            <View>
+              <Text style={styles.labelText}>Map:{data.carparking_url}</Text>
+            </View>
+            <View>
+              <Text style={styles.labelText}>
+                Price: {data.carparking_price} ฿/Hr.
+              </Text>
+            </View>
+          </View>
+
+          <View>
+            {/* onPress={handleCreate} */}
+            <Button style={styles.button} onPress={() => onPressDetail()}>
+              <Text style={styles.labelButton}>Booking</Text>
+            </Button>
+          </View>
         </View>
-      </ImageBackground>
-    </View>
+
+        {/* {items.map((item) => (
+          <Pressable
+            onPress={() =>
+              navigation.navigate("HistoryBooking", { id: item.booking_id })
+            }
+            key={item.booking_id}
+          >
+            <View style={styles.showCard}>
+              <Card>
+                <Card.Content style={styles.card}>
+                  <Title style={styles.titlePlace}>{item.booking_place}</Title>
+                  <Card.Actions>
+                    <Text>เวลาจอง: {item.booking_time_in} น.</Text>
+                    <Text>
+                      วันที่: {formatDate(item.booking_date)}
+                    </Text>
+                  </Card.Actions>
+                </Card.Content>
+              </Card>
+            </View>
+          </Pressable>
+        ))} */}
+      </ScrollView>
+    </ImageBackground>
   );
 };
 
@@ -74,11 +155,27 @@ const styles = StyleSheet.create({
   backGround: {
     backgroundColor: "#fff",
   },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+    backgroundColor: "#3ec97c", // set a semi-transparent background color for the container
+  },
+  container: {
+    padding: 20,
+  },
   headingImg: {
     width: "100%",
     height: 310,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+  },
+  headingText: {
+    fontSize: 28,
+    fontWeight: "700",
+    marginTop: 20,
+    marginBottom: 15,
+    color: "#2f2f2f",
+    alignSelf: "center",
   },
   emptyView: {
     height: 220,
@@ -150,5 +247,37 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  horizontalLine: {
+    marginBottom: 15,
+    borderBottomColor: "#2f2f2f", // Change the color to your desired color
+    borderBottomWidth: 1, // Change the thickness as needed
+  },
+  previewImg: {
+    backgroundColor: "#fff",
+    height: 300,
+    borderRadius: 20,
+  },
+  button: {
+    paddingBottom: 5,
+    paddingTop: 5,
+    borderRadius: 5,
+    backgroundColor: "#2f2f2f",
+    marginTop: 20,
+    width: "100%",
+  },
+  labelButton: {
+    color: "#fff",
+  },
+  labelText: {
+    marginBottom: 10,
+  },
+  headingImg: {
+    width: "100%",
+    height: 300,
+    marginBottom: 10,
+  },
+  bgImg: {
+    // backgroundColor: "#fff",
   },
 });

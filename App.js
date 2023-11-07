@@ -39,93 +39,94 @@ import CreateCarparkingScreen from "./screens/superadmin/CreateCarparkingScreen"
 import MangeCarparkingScreen from "./screens/superadmin/MangeCarparkingScreen";
 import UpdateRoleScreen from "./screens/superadmin/UpdateRoleScreen";
 
+
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name='Login'
+          name="Login"
           component={LoginScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='Register'
+          name="Register"
           component={RegisterScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='Home'
+          name="Home"
           component={HomeScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='Carparking'
+          name="Carparking"
           component={CarparkingScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='CarparkingDetail'
+          name="CarparkingDetail"
           component={CarparkingDetailScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='CarparkingCreate'
+          name="CarparkingCreate"
           component={CarparkingCreateScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='CarparkingMange'
+          name="CarparkingMange"
           component={CarparkingMangeScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='Booking'
+          name="Booking"
           component={BookingScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='BookingDetail'
+          name="BookingDetail"
           component={BookingDetailScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='BookingPayment'
+          name="BookingPayment"
           component={BookingPaymentScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='BookingPaymentDetail'
+          name="BookingPaymentDetail"
           component={BookingPaymentDetailScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='BookingFinish'
+          name="BookingFinish"
           component={BookingFinishScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='History'
+          name="History"
           component={BookingHistoryScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='HistoryBooking'
+          name="HistoryBooking"
           component={BookingHistoryDetailScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='DasboardOwner'
+          name="DasboardOwner"
           component={DasboardOwner}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='AdminMangeUser'
+          name="AdminMangeUser"
           component={AdminMangeUserScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='BookingHistoryOwner'
+          name="BookingHistoryOwner"
           component={BookingHistoryOwnerScreen}
           options={{ headerShown: false }}
         />

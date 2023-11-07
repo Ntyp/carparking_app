@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Modal, Portal, Button, Provider } from "react-native-paper";
 import Fonts from "../../fonts";
+import config from "../../config";
 
 const HomeScreen = ({ navigation }) => {
   const [user, setUser] = useState({});
@@ -10,11 +11,11 @@ const HomeScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = { backgroundColor: "white", padding: 20 };
+  const containerStyle = { backgroundColor: "white", padding: 20 ,zIndex:999};
 
   const fetchUser = async () => {
     const accessToken = await AsyncStorage.getItem("_accessToken");
-    const response = await fetch("http://10.0.2.2:6969/api/authen", {
+    const response = await fetch(`${config.mainAPI}/authen`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
     const accessToken = await AsyncStorage.getItem("@accessToken");
     AsyncStorage.removeItem("userid");
     setUser({});
-    const responses = await fetch("http://10.0.2.2:6969/api/logout", {
+    const responses = await fetch(`${config.mainAPI}/logout`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +46,7 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchUser();
-  }, [isLoading]);
+  }, []);
 
   return (
     <ImageBackground
@@ -53,10 +54,12 @@ const HomeScreen = ({ navigation }) => {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Image
-          style={styles.headingImg}
-          source={require("../../components/images/homescreen.png")}
-        />
+        {user.status == "user" ? (
+          <Image
+            style={styles.headingImg}
+            source={require("../../components/images/homescreen.png")}
+          />
+        ) : null}
         <Modal
           visible={visible}
           onDismiss={hideModal}
@@ -79,14 +82,14 @@ const HomeScreen = ({ navigation }) => {
           <>
             <Button
               style={styles.btnStarted}
-              mode='contained'
+              mode="contained"
               onPress={() => navigation.navigate("Carparking")}
             >
               Get Started
             </Button>
             <Button
               style={styles.button}
-              mode='contained'
+              mode="contained"
               onPress={() => navigation.navigate("History")}
             >
               History Booking
@@ -98,24 +101,24 @@ const HomeScreen = ({ navigation }) => {
           <>
             <Button
               style={styles.button}
-              mode='contained'
+              mode="contained"
               onPress={() => navigation.navigate("DasboardOwner")}
             >
               Dashboard
             </Button>
             <Button
               style={styles.button}
-              mode='contained'
+              mode="contained"
               onPress={() => navigation.navigate("CarparkingMange")}
             >
-              Carparking Lane Status
+              Manage Parking
             </Button>
             <Button
               style={styles.button}
-              mode='contained'
+              mode="contained"
               onPress={() => navigation.navigate("BookingHistoryOwner")}
             >
-              Booking History
+              Parking History
             </Button>
           </>
         ) : null}
@@ -124,21 +127,21 @@ const HomeScreen = ({ navigation }) => {
           <>
             <Button
               style={styles.button}
-              mode='contained'
+              mode="contained"
               onPress={() => navigation.navigate("CarparkingCreate")}
             >
               Create Carparking
             </Button>
             <Button
               style={styles.button}
-              mode='contained'
+              mode="contained"
               onPress={() => navigation.navigate("AdminMangeUser")}
             >
               Manage User
             </Button>
           </>
         ) : null}
-        <Text style={styles.logoutText} onPress={showModal}>
+        <Text style={styles.logoutText} onPress={handleLogout}>
           Logout
         </Text>
       </View>
@@ -197,6 +200,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "700",
     alignSelf: "center",
+    zIndex: 999,
   },
   cancelText: {
     alignSelf: "center",

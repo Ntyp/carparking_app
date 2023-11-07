@@ -10,6 +10,8 @@ import {
 import { Card, Searchbar, Title, Paragraph } from "react-native-paper";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import config from "../../config";
+import axios from "axios";
 
 const CarparkingScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,14 +74,27 @@ const CarparkingScreen = ({ navigation }) => {
     navigation.navigate("CarparkingDetail", { id: id, place: place });
   };
   const [items, setItems] = useState([]);
-  useEffect(() => {
-    fetch("http://10.0.2.2:6969/api/carparking")
-      .then((res) => res.json())
-      .then((result) => {
-        console.log("result =>", result.data);
-        setItems(result?.data);
+
+  const getCarParkingList = () => {
+    axios
+      .get(`${config.mainAPI}/getCarParkingList`)
+      .then(function (response) {
+        console.log("response", response.data);
+        if (response.data && response.data.data) {
+          setItems(response.data.data);
+        } else {
+          setItems([]);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
       });
+  };
+
+  useEffect(() => {
+    getCarParkingList();
   }, []);
+
   return (
     <ImageBackground
       source={require("../../components/images/texture-geometry-shapes-2.png")}
@@ -87,13 +102,13 @@ const CarparkingScreen = ({ navigation }) => {
     >
       <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.headingText}>Carparking</Text>
+          <Text style={styles.headingText}>Car Parking</Text>
           {items && items.length > 0 ? (
             <>
               {items.map((item) => (
                 <Pressable
                   onPress={() =>
-                    onPressDetail(item?.carparking_id, item?.carparking_name)
+                    onPressDetail(item?.carparking_id)
                   }
                   key={item?.carparking_id}
                 >
@@ -103,7 +118,7 @@ const CarparkingScreen = ({ navigation }) => {
                         <Title style={styles.titlePlace}>
                           {item?.carparking_name}
                         </Title>
-                        <Paragraph>{item?.carparking_name_th}</Paragraph>
+                        <Paragraph>Price: {item?.carparking_price}/Hr.</Paragraph>
                       </Card.Content>
                     </Card>
                   </View>
@@ -162,7 +177,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginTop: 20,
     marginBottom: 15,
-    color: "#fff",
     alignSelf: "center",
     // fontFamily: Fonts.PromptRegular,
   },
