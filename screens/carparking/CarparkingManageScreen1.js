@@ -4,6 +4,7 @@ import { TextInput, Button, Text, DataTable } from "react-native-paper";
 import axios from "axios";
 import RNPickerSelect from "react-native-picker-select";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import config from "../../config";
 
 const CarparkingMangeScreen1 = ({ navigation }) => {
   const [place, setPlace] = useState("");
@@ -18,7 +19,7 @@ const CarparkingMangeScreen1 = ({ navigation }) => {
       console.log(userData);
       setUser(userData);
       axios
-        .get(`http://10.0.2.2:6969/api/owner-status-carparking/${userData.id}`)
+        .get(`${config.mainAPI}/owner-status-carparking/${userData.id}`)
         .then(function (response) {
           console.log("result =>", response.data.data);
           setItems(response.data.data);

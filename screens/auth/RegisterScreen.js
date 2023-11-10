@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
-
+import config from "../../config";
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    const response = await fetch("http://10.0.2.2:6969/api/register", {
+    const response = await fetch(`${config.mainAPI}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { StyleSheet, View, Image, Alert, ImageBackground } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import config from "../../config";
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = async () => {
-    const response = await fetch("http://10.0.2.2:6969/api/login", {
+    const response = await fetch(`${config.mainAPI}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

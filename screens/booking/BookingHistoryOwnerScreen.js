@@ -55,9 +55,9 @@ const BookingHistoryOwnerScreen = ({ navigation }) => {
     }
   };
 
-  const getParkingHistory = (name) => {
+  const getParkingHistory = (id) => {
     axios
-      .get(`${config.mainAPI}/getParkingHistoryByPlace/${name}`)
+      .get(`${config.mainAPI}/getParkingHistoryByPlace/${id}`)
       .then(function (response) {
         console.log("response", response.data);
         if (response.data && response.data.data) {
@@ -72,8 +72,9 @@ const BookingHistoryOwnerScreen = ({ navigation }) => {
   };
 
   const onChangeCarParking = (value) => {
+    console.log("value", value);
     setParking(value.carparking_name);
-    getParkingHistory(value.carparking_name);
+    getParkingHistory(value.carparking_id);
   };
 
   useEffect(() => {

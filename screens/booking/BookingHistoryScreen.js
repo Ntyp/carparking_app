@@ -14,13 +14,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import moment from "moment";
 import config from "../../config";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const BookingHistoryScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const [user, setUser] = useState();
 
   function formatDate(value) {
-    return moment(value).format("YYYY-MM-DD");
+    // return moment(value).format("YYYY-MM-DD");
+    return moment(value).format("DD/MM/YYYY");
   }
 
   const fetchData = async () => {
@@ -57,13 +59,18 @@ const BookingHistoryScreen = ({ navigation }) => {
             <View style={styles.showCard}>
               <Card>
                 <Card.Content style={styles.card}>
-                  <Title style={styles.titlePlace}>{item.booking_place}</Title>
-                  <Card.Actions>
-                    <Text>เวลาจอง: {item.booking_time_in} น.</Text>
-                    <Text>
-                      วันที่: {formatDate(item.booking_date)}
-                    </Text>
-                  </Card.Actions>
+                  <View style={styles.rowContainer}>
+                    <View style={styles.row}>
+                      <Icon name="car-outline" color="#000" size={40} />
+                      <Title style={styles.titlePlace}>
+                        {item.carparking_name}
+                      </Title>
+                    </View>
+                    <View style={styles.row}>
+                      <Text>เวลาจอง: {item.booking_time_in} น.</Text>
+                      <Text>วันที่: {formatDate(item.booking_date)}</Text>
+                    </View>
+                  </View>
                 </Card.Content>
               </Card>
             </View>
@@ -180,5 +187,14 @@ const styles = StyleSheet.create({
   },
   money: {
     alignSelf: "center",
+  },
+  rowContainer: {
+    flexDirection: "column",
+    alignItems: "stretch",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });

@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import axios from "axios";
+import config from "../../config";
 
 const BookingHistoryDetailScreen = ({ navigation, route }) => {
   const [items, setItems] = useState({});
@@ -16,12 +17,24 @@ const BookingHistoryDetailScreen = ({ navigation, route }) => {
     navigation.navigate("Home");
   };
 
-  const fetchData = async () => {
-    await fetch(`http://10.0.2.2:6969/api/booking/${id}`)
-      .then((res) => res.json())
-      .then((result) => {
-        console.log("result =>", result.data[0]);
-        setItems(result.data[0]);
+  // const fetchData = async () => {
+  //   await fetch(`${config.mainAPI}/booking/${id}`)
+  //     .then((res) => res.json())
+  //     .then((result) => {
+  //       console.log("result =>", result.data[0]);
+  //       setItems(result.data[0]);
+  //     });
+  // };
+
+  const fetchData = () => {
+    axios
+      .get(`${config.mainAPI}/booking/${id}`)
+      .then(function (response) {
+        console.log("response", response.data.data[0]);
+        setItems(response.data.data[0]);
+      })
+      .catch(function (error) {
+        console.log(error);
       });
   };
 
@@ -44,22 +57,22 @@ const BookingHistoryDetailScreen = ({ navigation, route }) => {
     // navigation.navigate("Home");
     const id = items.booking_id;
     const place = items.booking_place_id;
-    const lane = items.booking_lane;
-    const timeIn = items.booking_time_in;
-    const timeOut = moment().format("HH:mm:ss");
-
+    const user = JSON.parse(userDataString);
     axios
-      .post("http://10.0.2.2:6969/api/booking/goout", {
+      .post(`${config.mainAPI}/updateStatusGoOutCarparking`, {
         id: id, //booking_id
-        place: place, //booking_place
-        lane: lane,
-        timeIn: timeIn,
-        timeOut: timeOut,
-        cancel: user.is_cancel,
+        place: place,
+        user:user
       })
       .then(function (response) {
-        alert("Go in Success");
-        navigation.navigate("Home");
+        if (response.data.success) {
+          alert("ออกจากที่จอดสำเร็จ");
+          navigation.navigate("Home");
+        } else {
+          alert(
+            `ไม่สามารถนำรถออกจากที่จอดกรุณาลองใหม่อีกครั้ง`
+          );
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -72,16 +85,24 @@ const BookingHistoryDetailScreen = ({ navigation, route }) => {
     setUser(userData);
     const id = items.booking_id;
     const place = items.booking_place_id;
+    const lane = items.booking_lane;
     const user = userData.id;
     axios
-      .post("http://10.0.2.2:6969/api/booking/goin", {
-        id: id, //booking_id
-        place: place, //booking_place
+      .post(`${config.mainAPI}/updateStatusGoInCarparking`, {
+        id: id,
+        place: place,
         user: user,
+        lane: lane,
       })
       .then(function (response) {
-        alert("Go in Success");
-        navigation.navigate("Home");
+        if (response.data.success) {
+          alert("นำรถเข้าจอดสำเร็จ");
+          navigation.navigate("Home");
+        } else {
+          alert(
+            `ไม่สามารถนำรถเข้าจอดได้กรุณาลองใหม่อีกครั้ง`
+          );
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -91,14 +112,16 @@ const BookingHistoryDetailScreen = ({ navigation, route }) => {
   const handelCancel = () => {
     const id = items.booking_id;
     axios
-      .post("http://10.0.2.2:6969/api/booking/cancel", {
-        id: id, //booking_id
+      .post(`${config.mainAPI}/updateCancelBooking`, {
+        id: id,
       })
       .then(function (response) {
         console.log(response);
-        if (response.success) {
+        if (response.data.success) {
           alert("ยกเลิกสำเร็จ");
           navigation.navigate("Home");
+        } else {
+          alert(`ไม่สามารถยกเลิกได้ (${response.message})`);
         }
       })
       .catch(function (error) {
@@ -122,60 +145,89 @@ const BookingHistoryDetailScreen = ({ navigation, route }) => {
       <View>
         <View style={styles.cardBottom}>
           <View style={styles.frameCardBottom}>
-            <Text style={styles.placeText}>{items.booking_place}</Text>
+            <Text style={styles.placeText}>{items.carparking_name}</Text>
+            <Text style={styles.statusText}>
+              Status: {items.booking_status}
+            </Text>
             <View style={styles.timeBox}>
-              <View style={styles.circleBooking}>
-                <Icon
-                  style={styles.iconBooking}
-                  name='alarm-outline'
-                  color='#fff'
-                  size={22}
-                />
+              <View style={styles.rowContainer}>
+                <View style={styles.row}>
+                  <View style={styles.circleBooking}>
+                    <Icon
+                      style={styles.iconBooking}
+                      name="alarm-outline"
+                      color="#fff"
+                      size={22}
+                    />
+                  </View>
+                  <Text style={styles.labelDetail}>
+                    Date: {moment(items.booking_date).format("DD/MM/YYYY")}
+                  </Text>
+                  <Text style={styles.labelDetail}>
+                    Time: {items.booking_time_in}
+                  </Text>
+                </View>
+                {items.booking_goin ? (
+                  <View style={styles.row}>
+                    <Text style={styles.timeInOut}>
+                      เวลาเข้าจอด:{items.booking_goin}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
-              <Text style={styles.labelDetail}>
-                Date: {moment(items.booking_date).format("YYYY-MM-DD")}
-              </Text>
-              <Text style={styles.labelDetail}>
-                Time: {items.booking_time_in}
-              </Text>
             </View>
             <View style={styles.timeBox}>
-              <View style={styles.circleOut}>
-                <Icon
-                  style={styles.iconBooking}
-                  name='car-outline'
-                  color='#fff'
-                  size={22}
-                />
+              <View style={styles.rowContainer}>
+                <View style={styles.row}>
+                  <View style={styles.circleOut}>
+                    <Icon
+                      style={styles.iconBooking}
+                      name="car-outline"
+                      color="#fff"
+                      size={22}
+                    />
+                  </View>
+                  <Text style={styles.labelDetail}>
+                    Date: {moment(items.booking_date).format("DD/MM/YYYY")}
+                  </Text>
+                  <Text style={styles.labelDetail}>
+                    Time: {items.booking_time_out}
+                  </Text>
+                </View>
+                {items.booking_goout ? (
+                  <View style={styles.row}>
+                    <Text style={styles.timeInOut}>
+                      เวลาออก:{items.booking_goout}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
-              <Text style={styles.labelDetail}>
-                Date: {moment(items.booking_date).format("YYYY-MM-DD")}
-              </Text>
-              <Text style={styles.labelDetail}>
-                Time: {items.booking_time_out}
-              </Text>
             </View>
             <View>
-              <Text style={styles.statusText}>
-                Status: {items.booking_status}
-              </Text>
-              <Text style={styles.moneyText}>{items.booking_price} THB</Text>
+              {items.booking_price ? (
+                <Text style={styles.moneyText}>{items.booking_price} THB</Text>
+              ) : null}
+
               {items.booking_status == "รอเข้าจอด" ? (
-                <Button style={styles.cancelText} onPress={handelCancel}>
-                  ยกเลิก
-                </Button>
+                // <Button style={styles.cancelText} onPress={handelCancel}>
+                //   ยกเลิก
+                // </Button>
+
+                <Text style={styles.cancelText} onPress={handelCancel}>
+                  ยกเลิกการจอง
+                </Text>
               ) : null}
             </View>
           </View>
         </View>
         <View style={styles.buttonContainer}>
           {items.booking_status == "รอเข้าจอด" ? (
-            <Button style={styles.button} mode='contained' onPress={handleIn}>
+            <Button style={styles.button} mode="contained" onPress={handleIn}>
               Parking Now
             </Button>
           ) : null}
           {items.booking_status == "กำลังจอด" ? (
-            <Button style={styles.button} mode='contained' onPress={handleOut}>
+            <Button style={styles.button} mode="contained" onPress={handleOut}>
               Parking Finish
             </Button>
           ) : null}
@@ -295,9 +347,24 @@ const styles = StyleSheet.create({
     color: "#2f2f2f",
     marginTop: 20,
     marginBottom: 20,
+    alignSelf: "center",
   },
   cancelText: {
+    marginTop: 30,
     color: "#dc3545",
+    alignSelf: "center",
+  },
+  rowContainer: {
+    flexDirection: "column",
+    alignItems: "stretch",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  timeInOut: {
+    marginTop: 20,
     alignSelf: "center",
   },
 });

@@ -95,10 +95,8 @@ const BookingScreen = ({ navigation, route }) => {
 
   const handleTimeOut = () => {};
 
-
   // เปลี่ยนใหม่ให้จองได้ทุกครึ่งชั่วโมง
   // ต้องมาก่อนเวลา 15นาที
-
 
   const setTimeIn = (time) => {
     const momentTimeIn = moment(time, "HH:mm");
@@ -108,6 +106,8 @@ const BookingScreen = ({ navigation, route }) => {
 
     const momentTimeNowParking = moment();
     // เช็คว่าย้อนหลังไหม
+    // จองย้อนหลังได้ถ้าเวลาปัจจุบันไม่เกิน 15 นาที
+
     // if (momentTimeNowParking.isValid() && momentTimeIn.isValid()) {
     //   const timeDiffMinutesParking = momentTimeNowParking.diff(
     //     momentTimeIn,
@@ -125,35 +125,37 @@ const BookingScreen = ({ navigation, route }) => {
     const momentTimeStartParking = moment(timeStartParking, "HH:mm");
 
     // เช็คเวลาเปิดมากกว่า 6 โมง
-    if (momentTimeStartParking.isValid() && momentTimeIn.isValid()) {
-      // Calculate the time difference in minutes
-      const timeDiffMinutesParking = momentTimeIn.diff(
-        momentTimeStartParking,
-        "minutes"
-      );
-      if (timeDiffMinutesParking < 0) {
-        setOpen(false);
-        alert("Time Difference Must More Than 06:00");
-        return;
-      }
-    }
+    // if (momentTimeStartParking.isValid() && momentTimeIn.isValid()) {
+    //   // Calculate the time difference in minutes
+    //   const timeDiffMinutesParking = momentTimeIn.diff(
+    //     momentTimeStartParking,
+    //     "minutes"
+    //   );
+    //   console.log('timeDiffMinutesParking',timeDiffMinutesParking);
+
+    //   if (timeDiffMinutesParking < 0) {
+    //     setOpen(false);
+    //     alert("Time Difference Must More Than 06:00");
+    //     return;
+    //   }
+    // }
 
     // เช็คว่าจองต้องก่อน 19.00 เพราะว่าต้องก่อนเวลาปิด
-    const momentSelectedTimeEndParking = moment(timeEndParking, "HH:mm");
-    if (momentSelectedTimeEndParking.isValid() && momentTimeIn.isValid()) {
-      // Calculate the time difference in minutes
-      const timeDiffMinutesParking = momentTimeIn.diff(
-        momentSelectedTimeEndParking,
-        "minutes"
-      );
-      console.log("timeDiffMinutesParking", timeDiffMinutesParking);
-      if (timeDiffMinutesParking > 0) {
-        console.log("Time Difference Must Less Than 19:00");
-        setOpen(false);
-        alert("Time Difference Must Less Than 19:00");
-        return;
-      }
-    }
+    // const momentSelectedTimeEndParking = moment(timeEndParking, "HH:mm");
+    // if (momentSelectedTimeEndParking.isValid() && momentTimeIn.isValid()) {
+    //   // Calculate the time difference in minutes
+    //   const timeDiffMinutesParking = momentTimeIn.diff(
+    //     momentSelectedTimeEndParking,
+    //     "minutes"
+    //   );
+    //   console.log("timeDiffMinutesParking", timeDiffMinutesParking);
+    //   if (timeDiffMinutesParking > 0) {
+    //     console.log("Time Difference Must Less Than 19:00");
+    //     setOpen(false);
+    //     alert("Time Difference Must Less Than 19:00");
+    //     return;
+    //   }
+    // }
 
     // Validate
 
@@ -194,49 +196,49 @@ const BookingScreen = ({ navigation, route }) => {
     const momentTimeNowParking = moment();
 
     // เช็คเวลาย้อนหลัง
-    if (momentTimeNowParking.isValid() && momentTimeOut.isValid()) {
-      const timeDiffMinutesParking = momentTimeNowParking.diff(
-        momentTimeOut,
-        "minutes"
-      );
-      if (timeDiffMinutesParking < 0) {
-        setOpenTimeOut(false);
-        alert(`Unable to reserve time later.`);
-        return;
-      }
-    }
+    // if (momentTimeNowParking.isValid() && momentTimeOut.isValid()) {
+    //   const timeDiffMinutesParking = momentTimeNowParking.diff(
+    //     momentTimeOut,
+    //     "minutes"
+    //   );
+    //   console.log('timeDiffMinutesParking',timeDiffMinutesParking);
+    //   if (timeDiffMinutesParking < 0) {
+    //     setOpenTimeOut(false);
+    //     alert(`Unable to reserve time later.`);
+    //     return;
+    //   }
+    // }
 
-    // Parse the times using moment
-    const momentTimeStartParking = moment(timeStartParking, "HH:mm");
+    // ห้ามก่อน 6 โมงเช้า
+    // const momentTimeStartParking = moment(timeStartParking, "HH:mm");
+    // if (momentTimeStartParking.isValid() && momentTimeOut.isValid()) {
+    //   // Calculate the time difference in minutes
+    //   const timeDiffMinutesParking = momentTimeOut.diff(
+    //     momentTimeStartParking,
+    //     "minutes"
+    //   );
+    //   if (timeDiffMinutesParking < 0) {
+    //     setOpenTimeOut(false);
+    //     console.log("Time Difference Must More Than 06:00");
+    //     alert("Time Difference Must More Than 06:00");
+    //     return;
+    //   }
+    // }
 
-    if (momentTimeStartParking.isValid() && momentTimeOut.isValid()) {
-      // Calculate the time difference in minutes
-      const timeDiffMinutesParking = momentTimeOut.diff(
-        momentTimeStartParking,
-        "minutes"
-      );
-      if (timeDiffMinutesParking < 0) {
-        setOpenTimeOut(false);
-        console.log("Time Difference Must More Than 06:00");
-        alert("Time Difference Must More Than 06:00");
-        return;
-      }
-    }
-
-    const momentSelectedTimeEndParking = moment(timeEndParking, "HH:mm");
-
-    if (momentSelectedTimeEndParking.isValid() && momentTimeOut.isValid()) {
-      const timeDiffMinutesParking = momentTimeOut.diff(
-        momentSelectedTimeEndParking,
-        "minutes"
-      );
-      if (timeDiffMinutesParking > 0) {
-        console.log("Time Difference Must Less Than 20:00");
-        setOpenTimeOut(false);
-        alert("Time Difference Must Less Than 20:00");
-        return;
-      }
-    }
+    // ห้ามเกิน 2 ทุ่ม
+    // const momentSelectedTimeEndParking = moment(timeEndParking, "HH:mm");
+    // if (momentSelectedTimeEndParking.isValid() && momentTimeOut.isValid()) {
+    //   const timeDiffMinutesParking = momentTimeOut.diff(
+    //     momentSelectedTimeEndParking,
+    //     "minutes"
+    //   );
+    //   if (timeDiffMinutesParking > 0) {
+    //     console.log("Time Difference Must Less Than 20:00");
+    //     setOpenTimeOut(false);
+    //     alert("Time Difference Must Less Than 20:00");
+    //     return;
+    //   }
+    // }
 
     // ห้ามน้อยกว่าเวลาปัจจุบัน
 
@@ -296,7 +298,7 @@ const BookingScreen = ({ navigation, route }) => {
     };
     console.log("payload", payload);
     axios
-      .post(`${config.mainAPI}/booking`, ...payload)
+      .post(`${config.mainAPI}/booking1`, payload)
       .then(function (response) {
         alert("Booking Success");
         navigation.navigate("Home");
@@ -435,7 +437,7 @@ const BookingScreen = ({ navigation, route }) => {
 
         <View>
           <Text style={styles.textwarning}>
-            Please arrive 30 minutes earlier or the queue will be cancelled.
+            Please arrive 15 minutes earlier or the queue will be cancelled.
           </Text>
         </View>
 
@@ -444,7 +446,7 @@ const BookingScreen = ({ navigation, route }) => {
           open={open}
           date={timeBooking}
           mode="time"
-          minuteInterval={60} // Set the minute increment to 15 minutes
+          minuteInterval={30} // Set the minute increment to 15 minutes
           onConfirm={(date) => {
             setTimeIn(date); // Update selected time
           }}
@@ -457,7 +459,7 @@ const BookingScreen = ({ navigation, route }) => {
           modal
           open={openTimeOut}
           date={timeBookingOut}
-          minuteInterval={60} // Set the minute increment to 15 minutes
+          minuteInterval={30} // Set the minute increment to 15 minutes
           mode="time"
           onConfirm={(date) => {
             setTimeOut(date); // Update selected time
