@@ -7,11 +7,12 @@ import {
   Pressable,
   ImageBackground,
 } from "react-native";
-import { Card, Searchbar, Title, Paragraph } from "react-native-paper";
+import { Card, Searchbar, Title, Paragraph, Button } from "react-native-paper";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import config from "../../config";
 import axios from "axios";
+import { Dropdown } from "react-native-element-dropdown";
 
 const CarparkingScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,7 +69,7 @@ const CarparkingScreen = ({ navigation }) => {
     { value: "48", nameTh: "ทุ่งครุ", nameEn: "Thung Khru" },
     { value: "49", nameTh: "บางบอน", nameEn: "Bang Bon" },
   ];
-  const onChangeSearch = (query) => setSearchQuery(query);
+  // const onChangeSearch = (query) => setSearchQuery(query);
   const onPressDetail = (id, place) => {
     console.log("Change Screen");
     navigation.navigate("CarparkingDetail", { id: id, place: place });
@@ -78,6 +79,22 @@ const CarparkingScreen = ({ navigation }) => {
   const getCarParkingList = () => {
     axios
       .get(`${config.mainAPI}/getCarParkingList`)
+      .then(function (response) {
+        console.log("response", response.data);
+        if (response.data && response.data.data) {
+          setItems(response.data.data);
+        } else {
+          setItems([]);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const onSearch = () => {
+    axios
+      .post(`${config.mainAPI}/searchCarparking`, { name: searchQuery })
       .then(function (response) {
         console.log("response", response.data);
         if (response.data && response.data.data) {
@@ -103,13 +120,36 @@ const CarparkingScreen = ({ navigation }) => {
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.headingText}>Car Parking</Text>
+          {/*  */}
+
+          <View>
+            <Dropdown
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={items}
+              search
+              searchPlaceholder="ค้นหา..."
+              placeholder={"ค้นหาลานจอด"}
+              maxHeight={300}
+              labelField="carparking_name"
+              valueField="carparking_name"
+              value={searchQuery}
+              onChange={(item) => {
+                setSearchQuery(item.carparking_name);
+              }}
+            />
+            <Button style={styles.button} onPress={onSearch}>
+              <Text style={styles.labelButton}>Search</Text>
+            </Button>
+          </View>
           {items && items.length > 0 ? (
             <>
               {items.map((item) => (
                 <Pressable
-                  onPress={() =>
-                    onPressDetail(item?.carparking_id)
-                  }
+                  onPress={() => onPressDetail(item?.carparking_id)}
                   key={item?.carparking_id}
                 >
                   <View style={styles.showCard}>
@@ -118,7 +158,9 @@ const CarparkingScreen = ({ navigation }) => {
                         <Title style={styles.titlePlace}>
                           {item?.carparking_name}
                         </Title>
-                        <Paragraph>Price: {item?.carparking_price}/Hr.</Paragraph>
+                        <Paragraph>
+                          Price: {item?.carparking_price}/Hr.
+                        </Paragraph>
                       </Card.Content>
                     </Card>
                   </View>
@@ -126,7 +168,7 @@ const CarparkingScreen = ({ navigation }) => {
               ))}
             </>
           ) : (
-            <Text>No items to show</Text>
+            <Text>ไม่พบลานจอดที่เปิดอยู่</Text>
           )}
 
           {/* {items.map((item) => (
@@ -259,5 +301,41 @@ const styles = StyleSheet.create({
   },
   placeName: {
     fontWeight: "bold",
+  },
+  dropdown: {
+    height: 62,
+    width: "100%",
+    borderBottomColor: "#333335",
+    borderBottomWidth: 0.5,
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+    marginBottom: 15,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  button: {
+    paddingBottom: 5,
+    paddingTop: 5,
+    borderRadius: 5,
+    backgroundColor: "#2f2f2f",
+    marginTop: 20,
+    width: "100%",
+  },
+  labelButton: {
+    color: "#fff",
   },
 });

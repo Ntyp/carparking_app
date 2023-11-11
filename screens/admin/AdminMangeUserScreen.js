@@ -32,7 +32,7 @@ const AdminMangeUserScreen = ({ navigation }) => {
   const handleUpdate = () => {
     axios
       .post(`${config.mainAPI}/edituser`, {
-        username: username,
+        username: selectedUser,
         role: role,
       })
       .then(function (response) {

@@ -11,7 +11,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "react-native-paper";
 import axios from "axios";
 import config from "../../config";
-
 const CarparkingDetailScreen = ({ navigation, route }) => {
   const image = { uri: "https://picsum.photos/700" };
   const [item, setItem] = useState({});
@@ -102,10 +101,10 @@ const CarparkingDetailScreen = ({ navigation, route }) => {
 
           <View>
             <View>
-              <Text style={styles.labelText}>Detail:</Text>
+              <Text style={styles.labelText}>Detail:{data.carparking_detail}</Text>
             </View>
             <View>
-              <Text style={styles.labelText}>Map:{data.carparking_url}</Text>
+              <Text style={styles.labelText}>Map:<Text style={{color: 'blue'}} onPress={() => Linking.openURL(`${data.carparking_url}`)}>Link</Text></Text>
             </View>
             <View>
               <Text style={styles.labelText}>

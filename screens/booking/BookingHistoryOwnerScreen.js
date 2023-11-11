@@ -16,29 +16,30 @@ const BookingHistoryOwnerScreen = ({ navigation }) => {
   const [parkingList, setParkingList] = useState([]);
   const [parking, setParking] = useState("");
 
-  const showData = async () => {
-    const userDataString = await AsyncStorage.getItem("_isAccessUser");
-    if (userDataString) {
-      const userData = JSON.parse(userDataString);
-      console.log(userData);
-      setUser(userData);
-      axios
-        .get(`${config.mainAPI}/owner-booking-history/${userData.id}`)
-        .then(function (response) {
-          console.log("result =>", response.data.data);
-          setItems(response.data.data);
-          // console.log(items);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  };
+  // const showData = async () => {
+  //   const userDataString = await AsyncStorage.getItem("_isAccessUser");
+  //   if (userDataString) {
+  //     const userData = JSON.parse(userDataString);
+  //     console.log(userData);
+  //     setUser(userData);
+  //     axios
+  //       .get(`${config.mainAPI}/owner-booking-history/${userData.id}`)
+  //       .then(function (response) {
+  //         console.log("result =>", response.data.data);
+  //         setItems(response.data.data);
+  //         // console.log(items);
+  //       })
+  //       .catch(function (error) {
+  //         console.log(error);
+  //       });
+  //   }
+  // };
 
   const getCarparkingByOwner = async () => {
     const userDataString = await AsyncStorage.getItem("_isAccessUser");
     if (userDataString) {
       const userData = JSON.parse(userDataString);
+      console.log('userData',userData);
       axios
         .get(`${config.mainAPI}/getCarparkingByOwner/${userData.username}`)
         .then(function (response) {
@@ -78,7 +79,7 @@ const BookingHistoryOwnerScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    showData();
+    // showData();
     getCarparkingByOwner();
   }, []);
 
