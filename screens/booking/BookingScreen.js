@@ -11,6 +11,7 @@ import {
 } from "react-native-paper";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-native-date-picker";
+// import TimePicker from "react-native-24h-timepicker";
 import { Dropdown } from "react-native-element-dropdown";
 import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -56,6 +57,7 @@ const BookingScreen = ({ navigation, route }) => {
   const [selectedTimeOut, setSelectedTimeOut] = useState("");
   const [open, setOpen] = useState(false);
   const [openTimeOut, setOpenTimeOut] = useState(false);
+  const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
 
   // const handleTimeInPress = () => {
   //   setTimePickerVisible(true);
@@ -99,6 +101,11 @@ const BookingScreen = ({ navigation, route }) => {
   // ต้องมาก่อนเวลา 15นาที
 
   const setTimeIn = (time) => {
+   
+
+
+
+
     const momentTimeIn = moment(time, "HH:mm");
     const momentSelectedTimeOut = moment(selectedTimeOut, "HH:mm");
     const timeStartParking = "06:00"; // Replace with your actual time
@@ -159,25 +166,36 @@ const BookingScreen = ({ navigation, route }) => {
 
     // Validate
 
-    if (momentTimeIn.isValid() && momentSelectedTimeOut.isValid()) {
-      // Calculate the time difference in minutes
-      const timeDiffMinutes = momentTimeIn.diff(
-        momentSelectedTimeOut,
-        "minutes"
-      );
-      // Convert the time difference to hours and minutes
-      const minutes = timeDiffMinutes % 60;
+    // if (momentTimeIn.isValid() && momentSelectedTimeOut.isValid()) {
+    //   // Calculate the time difference in minutes
+    //   const timeDiffMinutes = momentTimeIn.diff(
+    //     momentSelectedTimeOut,
+    //     "minutes"
+    //   );
+    //   // Convert the time difference to hours and minutes
+    //   const minutes = timeDiffMinutes % 60;
 
-      // เวลาออกน้อยกว่าเวลาเข้า
-      if (minutes < 0) {
-        alert(`Time must more than ${momentSelectedTimeOut}`);
-        setOpen(false);
-        return;
-      }
+    //   // เวลาออกน้อยกว่าเวลาเข้า
+    //   if (minutes < 0) {
+    //     alert(`Time must more than ${momentSelectedTimeOut}`);
+    //     setOpen(false);
+    //     return;
+    //   }
+    // }
+    // setOpen(false);
+    // setTimeBooking(time);
+    // setSelectedTime(moment(time).format("HH:mm"));
+
+
+    if (isTimeInRange(time)) {
+      setOpen(false);
+      setTimeBooking(time);
+      setSelectedTime(moment(time).format("HH:mm"));
+    } else {
+      alert('Please select a time between 6:00 AM and 8:00 PM.');
+      setOpen(false);
+
     }
-    setOpen(false);
-    setTimeBooking(time);
-    setSelectedTime(moment(time).format("HH:mm"));
   };
 
   const setTimeOut = (time) => {
@@ -242,21 +260,25 @@ const BookingScreen = ({ navigation, route }) => {
 
     // ห้ามน้อยกว่าเวลาปัจจุบัน
 
-    if (momentTimeOut.isValid() && momentSelectedTime.isValid()) {
-      const timeDiffMinutes = momentTimeOut.diff(momentSelectedTime, "minutes");
-      const minutes = timeDiffMinutes % 60;
+    // if (momentTimeOut.isValid() && momentSelectedTime.isValid()) {
+    //   const timeDiffMinutes = momentTimeOut.diff(momentSelectedTime, "minutes");
+    //   const minutes = timeDiffMinutes % 60;
 
-      // เวลาออกน้อยกว่าเวลาเข้า
-      if (minutes < 0) {
-        alert(`Time must more than ${momentSelectedTime}`);
-        setOpenTimeOut(false);
-        return;
-      }
+    //   // เวลาออกน้อยกว่าเวลาเข้า
+    //   if (minutes < 0) {
+    //     alert(`Time must more than ${momentSelectedTime}`);
+    //     setOpenTimeOut(false);
+    //     return;
+    //   }
+    // }
+
+    if(isTimeOutRange(time)){
+      setOpenTimeOut(false);
+      setTimeBookingOut(time);
+      setSelectedTimeOut(moment(time).format("HH:mm")); // Update selected time
+    }else{
+      setOpenTimeOut(false);
     }
-
-    setOpenTimeOut(false);
-    setTimeBookingOut(time);
-    setSelectedTimeOut(moment(time).format("HH:mm")); // Update selected time
   };
 
   useEffect(() => {
@@ -341,6 +363,30 @@ const BookingScreen = ({ navigation, route }) => {
     }
   };
 
+  const hideTimePicker = () => {
+    setIsTimePickerVisible(false);
+  };
+
+  const handleTimePicked = (hour, minute) => {
+    console.log(hour);
+    console.log(minute);
+    hideTimePicker();
+  };
+
+  const showTimePicker = () => {
+    setIsTimePickerVisible(true);
+  };
+
+  const isTimeInRange = (date) => {
+    const selectedHour = date.getHours();
+    return selectedHour >= 6 && selectedHour <= 19;
+  };
+
+  const isTimeOutRange = (date) => {
+    const selectedHour = date.getHours();
+    return selectedHour >= 7 && selectedHour <= 20;
+  };
+
   return (
     <ImageBackground
       source={require("../../components/images/texture-geometry-shapes-2.png")}
@@ -408,6 +454,10 @@ const BookingScreen = ({ navigation, route }) => {
           </Button>
         </View> */}
 
+        <View>
+          <Button onPress={showTimePicker} title="Show Time Picker" />
+        </View>
+
         <View style={styles.inputContainer1}>
           <View style={styles.inputWrapper1}>
             <Button
@@ -440,6 +490,20 @@ const BookingScreen = ({ navigation, route }) => {
             Please arrive 15 minutes earlier or the queue will be cancelled.
           </Text>
         </View>
+
+        {/* <TimePicker
+          ref={ref => {
+            this.TimePicker = ref;
+          }}
+          onCancel={() => this.onCancel()}
+          onConfirm={(hour, minute) => this.onConfirm(hour, minute)}
+        /> */}
+
+        {/* <TimePicker
+          isVisible={isTimePickerVisible}
+          onConfirm={(hour, minute) => handleTimePicked(hour, minute)}
+          onCancel={() => hideTimePicker()}
+        /> */}
 
         <DatePicker
           modal

@@ -83,16 +83,12 @@ const BookingHistoryDetailScreen = ({ navigation, route }) => {
     const userDataString = await AsyncStorage.getItem("_isAccessUser");
     const userData = JSON.parse(userDataString);
     setUser(userData);
-    const id = items.booking_id;
-    const place = items.booking_place_id;
-    const lane = items.booking_lane;
-    const user = userData.id;
     axios
       .post(`${config.mainAPI}/updateStatusGoInCarparking`, {
-        id: id,
-        place: place,
-        user: user,
-        lane: lane,
+        id: items.booking_id,
+        place: items.booking_place_id,
+        user: userData.id,
+        lane: items.booking_lane,
       })
       .then(function (response) {
         if (response.data.success) {
